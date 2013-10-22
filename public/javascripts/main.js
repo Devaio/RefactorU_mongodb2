@@ -12,9 +12,8 @@ $(function(){
 	});
 
 	$(document).on('click', '.unqualified', function(){
-
 			$.get('/applicant', { buttonId : $(this).attr('data') }, function(data){
-				console.log($(this).attr('data'))
+				
 			});
 	});
 
