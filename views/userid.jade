@@ -1,0 +1,14 @@
+extends layout
+
+block content
+	.container
+		h1 #{applicantPool.name}
+		hr
+		ul#applications.list-unstyled
+			li.applicant.well.jumbotron
+				h5= 'Bio: ' + applicantPool.bio
+				h5= 'Sweet skills: ' +applicantPool.skills
+				h5= 'Why they want to work here: ' + applicantPool.why
+				h5= 'Years of experience: ' + applicantPool.experience
+				.container
+					button.unqualified.btn.btn-danger(type='button', data= "#{applicantPool._id}") Unqualified

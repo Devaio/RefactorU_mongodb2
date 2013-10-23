@@ -13,8 +13,12 @@ $(function(){
 
 	$(document).on('click', '.unqualified', function(){
 			$.get('/applicant', { buttonId : $(this).attr('data') }, function(data){
-				
+				console.log(data)
 			});
+			$(this).closest('.applicant').fadeOut()
+			setTimeout(function(){
+				window.location.replace('/applicants')}, 
+				1000)
 	});
 
 });

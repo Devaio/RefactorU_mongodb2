@@ -37,6 +37,7 @@ var Application = mongoose.model('Application', {
 	skills: Array,
 	experience: Number,
 	why: String
+	// _id: mongoose.Types.ObjectId
 })
 
 
@@ -46,13 +47,25 @@ app.get('/', function(req, res){
 });
 
 app.get('/applicant', function(req, res){
-	
+	console.log("reqbody",req.query.buttonId)
+	var data =req.query
+
+	Application.findByIdAndRemove(data.buttonId, function(err, id){
+		console.log("id", id)
+		if(id){
+			console.log('success')
+		}
+		else{
+			console.log('err', err)
+		} 
+	})
+
+
 })
 
 // displays a list of applicants
 app.get('/applicants', function(req, res){
 	Application.find({}, function(err, data){
-		console.log(data)
 		res.render('applicants', {'applicantPool' : data})
 	})
 	
@@ -79,11 +92,29 @@ app.post('/applicant', function(req, res){
 				res.send(
 					{success : 'Success!', applicants: appData}
 				)
-			})
-		}
-	})
+			});
+		};
+	});
 
 });
+
+app.get('/:userid', function(req, res){
+	Application.findById(req.param('userid'), function(err, data){
+		console.log('req', req.param('userid'))
+		if(err){
+			console.log('error', err)
+		}
+		else{
+			console.log('app', data)
+			res.render('userid', {userid : req.param('_id'), 'applicantPool' : data})
+		}
+	});
+	
+})
+
+
+
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

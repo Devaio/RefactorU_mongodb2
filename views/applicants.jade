@@ -6,12 +6,8 @@ block content
 		br
 		ul#applications.list-unstyled
 			each val in applicantPool
-				li.applicant.well.jumbotron
-					h2= val.name
-					hr
-					h5= 'Bio: ' + val.bio
-					h5= 'Sweet skills: ' +val.skills
-					h5= 'Why they want to work here: ' + val.why
-					h5= 'Years of experience: ' + val.experience
-					.container
-						button.unqualified.btn.btn-danger(type='button', data= val['_id']) Unqualified
+				li.applicant.well
+					h2
+						a.appLink(href='/#{val._id}')= val.name
+			if applicantPool.length === 0
+				h3 No Applicants
