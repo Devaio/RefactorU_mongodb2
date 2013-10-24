@@ -5,6 +5,8 @@
 express = require 'express'
 http = require 'http'
 path = require 'path'
+routes = require './../routes'
+user = require './../routes/user'
 mongoose = require 'mongoose'
 app = express()
 
@@ -21,10 +23,10 @@ app.use express.static(path.join(__dirname, '/../public'))
 
 # development only
 if 'development' == app.get('env')
-  app.use express.errorHandler()
+	app.use express.errorHandler()
 
 #create mongo database
-mongoose.connect 'mongodb:#localhost/omegathreestudios'
+mongoose.connect 'mongodb://localhost/omegathreestudios'
 
 #set up documents
 Application = mongoose.model 'Application', {
@@ -42,33 +44,36 @@ app.get '/', (req, res) ->
 
 app.get '/applicant', (req, res) ->
 	console.log "reqbody",req.query.buttonId
-	data =req.query
+	data = req.query
 
 	Application.findByIdAndRemove data.buttonId, (err, id) ->
 		console.log "id", id 
-		if id
-			console.log 'success'
-		else
+		if err
 			console.log 'err', err
+		else
+			console.log 'success'
 		
 
 # displays a list of applicants
 app.get '/applicants', (req, res) ->
 	Application.find {}, (err, data) ->
-		res.render 'applicants', {'applicantPool' : data}
+		if err
+			console.log 'err'
+		else
+			res.render 'applicants', {'applicantPool' : data}
 
 # creates and applicant
 app.post '/applicant', (req, res) ->
 	# Here is where you need to get the data
 	# from the post body and store it
 
-	newApp = new Application({
+	newApp = new Application {
 		name: req.body.name,
 		bio: req.body.bio,
 		skills: (req.body.skills).split(','),
 		experience: req.body.years,
 		why: req.body.why
-	});
+	}
 	newApp.save (err) ->
 		if err
 			res.send err
@@ -81,10 +86,9 @@ app.get '/:userid', (req, res) ->
 		console.log 'req', req.param 'userid'
 		if err
 			console.log 'error', err
-		
 		else
 			console.log 'app', data
 			res.render 'userid', {userid : req.param('_id'), 'applicantPool' : data}
 
 http.createServer(app).listen app.get('port'), () ->
-  console.log 'Express server listening on port ' + app.get 'port'
+	console.log 'Express server listening on port ' + app.get 'port'
